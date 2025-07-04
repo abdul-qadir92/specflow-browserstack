@@ -19,7 +19,10 @@ steps:
 - script: dotnet build
   displayName: 'Build the project'
 
-- script: dotnet test --filter "Category=sample-test" --logger:trx --results-directory $(System.DefaultWorkingDirectory)/TestResults
+- script: dotnet test --list-tests
+  displayName: 'List the tests'
+  
+- script: dotnet test --logger:trx --results-directory $(System.DefaultWorkingDirectory)/TestResults
   displayName: 'Run tests with BrowserStack (Category=sample-test)'
   env:
     BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
