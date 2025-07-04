@@ -9,7 +9,7 @@ variables:
   BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
 
 steps:
-- task: UseDotNet8
+- task: UseDotNet@2
   displayName: 'Install .NET 8 SDK'
   inputs:
     packageType: 'sdk'
