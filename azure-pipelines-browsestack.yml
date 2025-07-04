@@ -21,6 +21,9 @@ steps:
 
 - script: dotnet test --list-tests
   displayName: 'List the tests'
+
+- script: dotnet test --no-build --list-tests -v diag
+  displayName: 'List tests with diagnostics'
   
 - script: dotnet test --logger:trx --results-directory $(System.DefaultWorkingDirectory)/TestResults
   displayName: 'Run tests with BrowserStack (Category=sample-test)'
