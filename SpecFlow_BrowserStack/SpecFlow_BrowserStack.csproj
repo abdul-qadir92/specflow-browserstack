@@ -22,6 +22,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" />
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="4.10.66" />
   </ItemGroup>
 
 </Project>
