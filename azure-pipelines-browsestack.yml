@@ -1,5 +1,5 @@
 trigger:
-- main  # Change to your actual branch name if different
+- main  # or your branch
 
 pool:
   vmImage: 'windows-2022'
@@ -16,13 +16,7 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
-  displayName: 'Restore NuGet Packages'
-  inputs:
-    command: 'restore'
-    projects: '**/SpecFlow_BrowserStack.csproj'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Build the SpecFlow Project'
+  displayName: 'Build the SpecFlow Project (with Restore)'
   inputs:
     command: 'build'
     projects: '**/SpecFlow_BrowserStack.csproj'
