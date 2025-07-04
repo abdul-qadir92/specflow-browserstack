@@ -28,7 +28,7 @@ namespace SpecFlowBrowserStack
 		public static void Initialize(ScenarioContext scenarioContext)
 		{
 			ChromeOptions capabilities = new ChromeOptions();
-			ThreadLocalDriver.Value = new RemoteWebDriver(new Uri("https://hub.browserstack.com/wd/hub/"),capabilities);
+			ThreadLocalDriver.Value = new ChromeDriver(@"C:\Users\qadir\Downloads\chromedriver-138\chromedriver-win64", capabilities);
 		}
 
 

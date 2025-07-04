@@ -4,8 +4,8 @@
 # Add your BrowserStack userName and acccessKey here or set BROWSERSTACK_USERNAME and
 # BROWSERSTACK_ACCESS_KEY as env variables
 
-userName: YOUR_USERNAME
-accessKey: YOUR_ACCESS_KEY
+userName: 
+accessKey: 
 
 # ======================
 # BrowserStack Reporting
@@ -25,7 +25,6 @@ buildIdentifier: '#${BUILD_NUMBER}' # Supports strings along with either/both ${
 
 source: specflow:sample-sdk:v1.0
 accessibility: true
-
 # =======================================
 # Platforms (Browsers / Devices to test)
 # =======================================
@@ -65,3 +64,4 @@ debug: false # <boolean> # Set to true if you need screenshots for every seleniu
 networkLogs: false # <boolean> Set to true to enable HAR logs capturing
 consoleLogs: errors # <string> Remote browser's console debug levels to be printed (Default: errors)
 # Available options are `disable`, `errors`, `warnings`, `info`, `verbose` (Default: errors)
+browserstackAutomation: true
