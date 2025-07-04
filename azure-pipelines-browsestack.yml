@@ -7,33 +7,53 @@ pool:
 variables:
   BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
   BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
-
+  
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  
 steps:
+# Install .NET 8.0 SDK
 - task: UseDotNet@2
-  displayName: 'Install .NET 8 SDK'
   inputs:
     packageType: 'sdk'
-    version: '8.x'
+    version: '8.0.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
+  displayName: 'Install .NET 8.0 SDK'
 
-- script: dotnet build
-  displayName: 'Build the project'
+# Verify .NET SDK version
+- script: |
+    dotnet --version
+  displayName: 'Verify .NET SDK Version'
 
-- script: dotnet test --list-tests
-  displayName: 'List the tests'
+# Install NuGet tool
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet Tool'
 
-- script: dotnet test --no-build --list-tests -v diag
-  displayName: 'List tests with diagnostics'
-  
-- script: dotnet test --logger:trx --results-directory $(System.DefaultWorkingDirectory)/TestResults
-  displayName: 'Run tests with BrowserStack (Category=sample-test)'
+# Restore NuGet packages
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+  displayName: 'Restore NuGet Packages'
+
+# Build the solution in Release mode
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore --verbosity minimal -nowarn:*'
+  displayName: 'Build Solution in Release Mode'
+
+# Run the tests and output results
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --verbosity minimal --no-restore --logger "trx;LogFileName=test-results.trx" -nowarn:*'
+    publishTestResults: true
+    testRunTitle: 'SpecFlow Test Run on BrowserStack'
+  displayName: 'Run Tests and Publish Results'
   env:
     BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
     BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
-
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results'
-  inputs:
-    testResultsFormat: 'VSTest'
-    testResultsFiles: '**/TestResults/*.trx'
-    failTaskOnFailedTests: true
