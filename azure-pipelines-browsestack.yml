@@ -1,5 +1,5 @@
 trigger:
-- main  # or your branch name
+- main  # Change to your actual branch name if different
 
 pool:
   vmImage: 'windows-2022'
@@ -13,26 +13,26 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '8.x'
-    includePreviewVersions: true  # Set to false if not using preview SDK
+    includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore NuGet Packages'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
+    projects: '**/SpecFlow_BrowserStack.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build the Project'
+  displayName: 'Build the SpecFlow Project'
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: '**/SpecFlow_BrowserStack.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'Run SpecFlow NUnit Tests'
   inputs:
     command: 'test'
-    projects: '**/*Tests.csproj'
+    projects: '**/SpecFlow_BrowserStack.csproj'
     arguments: '--configuration $(buildConfiguration) --no-build'
     publishTestResults: true
   env:
