@@ -5,13 +5,11 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
-  BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
-  
-variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
+  BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
   
 steps:
 # Install .NET 8.0 SDK
