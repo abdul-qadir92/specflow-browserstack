@@ -1,57 +1,40 @@
 trigger:
-- main
+- main  # or your branch name
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
-  BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
-  
+
 steps:
-# Install .NET 8.0 SDK
 - task: UseDotNet@2
+  displayName: 'Install .NET 8 SDK'
   inputs:
     packageType: 'sdk'
-    version: '8.0.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-  displayName: 'Install .NET 8.0 SDK'
+    version: '8.x'
+    includePreviewVersions: true  # Set to false if not using preview SDK
 
-# Verify .NET SDK version
-- script: |
-    dotnet --version
-  displayName: 'Verify .NET SDK Version'
-
-# Install NuGet tool
-- task: NuGetToolInstaller@1
-  displayName: 'Install NuGet Tool'
-
-# Restore NuGet packages
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-  displayName: 'Restore NuGet Packages'
-
-# Build the solution in Release mode
 - task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet Packages'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the Project'
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-restore --verbosity minimal -nowarn:*'
-  displayName: 'Build Solution in Release Mode'
+    arguments: '--configuration $(buildConfiguration)'
 
-# Run the tests and output results
 - task: DotNetCoreCLI@2
+  displayName: 'Run SpecFlow NUnit Tests'
   inputs:
     command: 'test'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --verbosity minimal --no-restore --logger "trx;LogFileName=test-results.trx" -nowarn:*'
+    projects: '**/*Tests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
     publishTestResults: true
-    testRunTitle: 'SpecFlow Test Run on BrowserStack'
-  displayName: 'Run Tests and Publish Results'
   env:
     BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
     BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
