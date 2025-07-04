@@ -1,0 +1,33 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
+  BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET 6 SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- script: dotnet build
+  displayName: 'Build the project'
+
+- script: dotnet browserstack-sdk --filter "Category=sample-test" --logger:trx --results-directory $(System.DefaultWorkingDirectory)/TestResults
+  displayName: 'Run tests with BrowserStack (Category=sample-test)'
+  env:
+    BROWSERSTACK_USERNAME: $(BROWSERSTACK_USERNAME)
+    BROWSERSTACK_ACCESS_KEY: $(BROWSERSTACK_ACCESS_KEY)
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/TestResults/*.trx'
+    failTaskOnFailedTests: true
